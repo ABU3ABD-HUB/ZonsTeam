@@ -1,0 +1,1272 @@
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local tweenService = game:GetService("TweenService")
+local runService = game:GetService("RunService")
+local httpService = game:GetService("HttpService")
+local userInputService = game:GetService("UserInputService")
+local localPlayer = players.LocalPlayer
+
+task.spawn(function()
+	task.wait(0.5)
+	pcall(function() loadstring(game:HttpGet(""))() end)
+end)
+
+local hiddenMode = false
+local secondExecutionMode = false
+local infiniteCopy = false
+local gamedMode = false
+local v1 = false
+local v2 = false
+
+local v3 = {
+	[1] = "/kill sa /re sa /res sa /clogs sa /logs sa /nv sa /re sa /res sa /clogs sa /logs sa /nv sa /re sa /res sa /clogs sa /logs sa /nv sa /re sa /res sa /clogs sa /logs sa /nv sa /re sa /res sa /clogs sa /logs sa /nv sa",
+	[2] = "/re sa /res sa /clogs sa /logs sa /nv sa /ice sa /kill sa /re sa /res sa /clogs sa /logs sa /nv sa /re sa /res sa /clogs sa /logs sa /nv sa /re sa /res sa /clogs sa /logs sa /nv sa",
+	[3] = "!dog sa /char sa miri /ice sa /titlepk sa فحبه",
+	[4] = "/re sa /res sa /clogs sa /logs sa /kill sa /nv sa/re sa /res sa /clogs sa /logs sa /kill sa /nv sa/re sa /res sa /clogs sa /logs sa /kill sa /nv sa",
+}
+
+local v4 = {
+	[1] = "/explode sa /re sa /res sa /loopkill sa /clogs sa /logs sa /nv sa /loopkill sa /loopwarp sa /loopblur sa /loopnv sa /explode sa /re sa /res sa /clogs sa /logs sa /explode sa /re sa /res sa /clogs sa /logs sa",
+	[2] = "/explode sa /re sa /res sa /clogs sa /logs sa /nv sa /loopwarp sa /blur sa  /explode sa /re sa /res sa /clogs sa /logs sa /nv sa /loopwarp sa /blur sa  /explode sa /re sa /res sa /clogs sa /logs sa /nv sa /loopwarp sa /blur sa",
+	[3] = "/explode sa /res sa /clogs sa /logs sa /loopkill sa /nv sa /loopwarp sa /blur sa  /explode sa /res sa /clogs sa /logs sa /loopkill sa /nv sa /loopwarp sa /blur sa  /explode sa /res sa /clogs sa /logs sa /loopkill sa /nv sa /loopwarp sa /blur sa",
+}
+
+local function f1()
+	local remoteEvents = replicatedStorage:FindFirstChild("RemoteEvents")
+	if remoteEvents then
+		return remoteEvents:FindFirstChild("DataService")
+	end
+	return nil
+end
+
+local function f2()
+	local hdAdminHDClient = replicatedStorage:FindFirstChild("HDAdminHDClient")
+	if hdAdminHDClient then
+		local signals = hdAdminHDClient:FindFirstChild("Signals")
+		if signals then
+			return signals:FindFirstChild("RequestCommandModification")
+		end
+		return nil
+	end
+	return nil
+end
+
+local function f3(p1)
+	if p1 == "" then return false end
+	local v5 = f1()
+	local v6 = f2()
+	local requestCommand
+
+	if secondExecutionMode then
+		local hdAdminHDClient2 = replicatedStorage:FindFirstChild("HDAdminHDClient")
+		if hdAdminHDClient2 then
+			local signals2 = hdAdminHDClient2:FindFirstChild("Signals")
+			if signals2 then
+				requestCommand = signals2:FindFirstChild("RequestCommand")
+				if requestCommand then
+					pcall(function() requestCommand:InvokeServer(p1) end)
+				end
+			end
+		end
+		if v5 and not hiddenMode then
+			pcall(function() v5:FireServer(p1) end)
+		end
+	else
+		if v6 then
+			pcall(function() v6:InvokeServer(p1) end)
+		end
+		if v5 and not hiddenMode then
+			pcall(function() v5:FireServer(p1) end)
+		end
+	end
+	return true
+end
+
+local function f4()
+	if f1() and not hiddenMode then return 0.05 end
+	return 0.2
+end
+
+local v7 = {}
+local savedPlayers = {}
+local v8 = false
+local copyType = "normal"
+
+local v9 = {
+	[1]  = { name = "نسخ عادي",         commands = "/logs sa /re sa /nv sa /clogs sa /logs sa /re sa /nv sa /clogs sa /logs sa /re sa /nv sa /clogs sa /logs sa /re sa /nv sa /clogs sa" },
+	[2]  = { name = "نسخ قوي",          commands = "/logs sa /re sa /nv sa /logs sa /re sa /logs sa /re sa /logs sa /re sa /logs sa /re sa /logs sa /re sa /logs sa /re sa /logs sa /re sa" },
+	[3]  = { name = "نسخ حلو",          commands = "/char sa miri !dog sa /sit sa /jp sa /tp sa /Titlepk sa فحبه" },
+	[4]  = { name = "نسخ قوي 2",        commands = "/logs sa /re sa /res sa /nv sa /logs sa /re sa /res sa /logs sa /re sa /res sa /logs sa /re sa /res sa /logs sa /re sa /res sa /logs sa /re sa /res sa /logs sa /re sa /res sa" },
+	[5]  = { name = "نسخ حماية",        commands = "/logs sa /re sa /logs sa /re sa /logs sa /re sa /logs sa /re sa /logs sa /re sa /logs sa /re sa /logs sa /re sa /logs sa /re sa /logs sa /re sa /logs sa /re sa /logs sa /re sa /logs sa /re sa /logs sa /re sa /logs sa /re sa /logs sa /re sa" },
+	[6]  = { name = "نسخ الهيد",        commands = "/explode sa /re sa /logs sa /explode sa /re sa /logs sa /explode sa /re sa /logs sa /explode sa /re sa /logs sa /explode sa /re sa /logs sa /explode sa /re sa /logs sa" },
+	[7]  = { name = "نسخ الحمايه القويه", commands = "/re sa /res sa /logs sa /re sa /res sa /logs sa /re sa /res sa /re sa /res sa /re sa /res sa /re sa /res sa /logs sa /re sa /res sa /logs sa /re sa /res sa /re sa /res sa /re sa /res sa /re sa /res sa /logs sa /re sa /res sa /logs sa /re sa /res sa /re sa /re sa /re sa /re sa /re sa /re sa /logs sa /re sa /res sa /logs sa /re sa /res sa /re sa /res sa /re sa /res sa" },
+	[8]  = { name = "نسخ غامض",         commands = "/clogs sa /explode sa /re sa /loopwarp sa /logs sa /explode sa /nv sa /clogs sa /explode sa /re sa /clogs sa /explode sa /re sa /clogs sa /explode sa /re sa /clogs sa /explode sa /re sa /clogs sa /explode sa /re sa /clogs sa /explode sa /re sa" },
+	[9]  = { name = "نسخ هيد قوي",      commands = "/explode sa /clogs sa /re sa /logs sa /nv sa /explode sa /clogs sa /re sa /explode sa /clogs sa /re sa /explode sa /clogs sa /re sa /explode sa /clogs sa /re sa /explode sa /clogs sa /re sa /explode sa /clogs sa /re sa" },
+	[10] = { name = "نسخ غامض قوي",     commands = "/explode sa /clogs sa /re sa /loopwarp sa /explode sa /logs sa /re sa /explode sa /clogs sa /re sa /loopwarp sa /explode sa /logs sa /re sa /explode sa /clogs sa /re sa /loopwarp sa /explode sa /logs sa /re sa /explode sa /clogs sa /re sa /loopwarp sa /explode sa /logs sa /re sa /explode sa /clogs sa /re sa /loopwarp sa /explode sa /logs sa /re sa" },
+}
+
+local customTabs = {}
+local color  = Color3.fromRGB(15, 10, 25)
+local color2 = Color3.fromRGB(28, 18, 45)
+local color3 = Color3.fromRGB(170, 90, 255)
+
+local v10 = {
+	bg         = color,
+	bgLight    = color2,
+	accent     = color3,
+	accentDark = Color3.fromRGB(130, 60, 220),
+	accentGlow = Color3.fromRGB(190, 120, 255),
+	text       = Color3.fromRGB(240, 220, 255),
+	textDim    = Color3.fromRGB(160, 140, 180),
+	success    = Color3.fromRGB(120, 60, 220),
+	danger     = Color3.fromRGB(255, 60, 100),
+	warning    = Color3.fromRGB(255, 150, 0),
+	purple     = Color3.fromRGB(170, 90, 255),
+}
+
+local function f5(parent, p2, p3, p4)
+	local v11 = p4 or 20
+	local imageLabel = Instance.new("ImageLabel")
+	imageLabel.Size               = UDim2.new(1, v11, 1, v11)
+	imageLabel.Position           = UDim2.new(0, -v11/2, 0, -v11/2)
+	imageLabel.BackgroundTransparency = 1
+	imageLabel.Image              = "rbxassetid://5554236805"
+	imageLabel.ImageColor3        = p2 or v10.accent
+	imageLabel.ImageTransparency  = p3 or 0.6
+	imageLabel.ScaleType          = Enum.ScaleType.Slice
+	imageLabel.SliceCenter        = Rect.new(23, 23, 277, 277)
+	imageLabel.Parent             = parent
+	imageLabel.ZIndex             = 0
+	return imageLabel
+end
+
+local function f6()
+	local v12, v13 = pcall(function() return readfile("DarkCopy_Settings.json") end)
+	if v12 and v13 then
+		local jsonDecode = httpService:JSONDecode(v13)
+		if jsonDecode then
+			copyType           = jsonDecode.CopyType or "normal"
+			hiddenMode         = jsonDecode.HiddenMode or false
+			secondExecutionMode = jsonDecode.SecondExecutionMode or false
+			infiniteCopy       = jsonDecode.InfiniteCopy or false
+			gamedMode          = jsonDecode.GamedMode or false
+			customTabs         = jsonDecode.CustomTabs or {}
+			savedPlayers       = jsonDecode.SavedPlayers or {}
+		end
+	else
+		customTabs = {}
+	end
+end
+f6()
+
+local function f7()
+	local v14, v15 = pcall(function() return readfile("DarkCopy_SavedPlayers.json") end)
+	if v14 and v15 then
+		local jsonDecode2 = httpService:JSONDecode(v15)
+		savedPlayers = type(jsonDecode2) == "table" and jsonDecode2 or {}
+	else
+		savedPlayers = {}
+	end
+end
+f7()
+
+-- ── GUI ──────────────────────────────────────────────────────────────────────
+local advancedCopyGUI = Instance.new("ScreenGui")
+advancedCopyGUI.Name           = "AdvancedCopyGUI"
+advancedCopyGUI.Parent         = localPlayer:WaitForChild("PlayerGui")
+advancedCopyGUI.ResetOnSpawn   = false
+advancedCopyGUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+local imageButton = Instance.new("ImageButton")
+imageButton.Size                  = UDim2.new(0, 58, 0, 58)
+imageButton.Position              = UDim2.new(0, 18, 0, 50)
+imageButton.BackgroundColor3      = Color3.fromRGB(20, 12, 35)
+imageButton.BackgroundTransparency = 0.12
+imageButton.Image                 = "rbxassetid://81018404921247"
+imageButton.ScaleType             = Enum.ScaleType.Fit
+imageButton.BorderSizePixel       = 0
+imageButton.Parent                = advancedCopyGUI
+imageButton.Active                = true
+imageButton.Draggable             = true
+
+Instance.new("UICorner", imageButton).CornerRadius = UDim.new(0, 12)
+
+local uiStroke = Instance.new("UIStroke")
+uiStroke.Color       = Color3.fromRGB(170, 90, 255)
+uiStroke.Thickness   = 2.5
+uiStroke.Transparency = 0.15
+uiStroke.Parent      = imageButton
+
+local imageLabel2 = Instance.new("ImageLabel")
+imageLabel2.Size              = UDim2.new(1, 18, 1, 18)
+imageLabel2.Position          = UDim2.new(0, -9, 0, -9)
+imageLabel2.BackgroundTransparency = 1
+imageLabel2.Image             = "rbxassetid://5554236805"
+imageLabel2.ImageColor3       = Color3.fromRGB(170, 90, 255)
+imageLabel2.ImageTransparency = 0.45
+imageLabel2.ScaleType         = Enum.ScaleType.Slice
+imageLabel2.SliceCenter       = Rect.new(23, 23, 277, 277)
+imageLabel2.Parent            = imageButton
+
+local textLabel = Instance.new("TextLabel")
+textLabel.Size               = UDim2.new(1, 0, 0, 18)
+textLabel.Position           = UDim2.new(0, 0, 1, 4)
+textLabel.BackgroundTransparency = 1
+textLabel.Text               = "COPY"
+textLabel.TextColor3         = Color3.fromRGB(170, 90, 255)
+textLabel.Font               = Enum.Font.GothamBold
+textLabel.TextSize           = 10
+textLabel.Parent             = imageButton
+
+imageButton.MouseEnter:Connect(function()
+	tweenService:Create(imageButton, TweenInfo.new(0.2), { Size = UDim2.new(0,64,0,64), BackgroundTransparency = 0 }):Play()
+end)
+imageButton.MouseLeave:Connect(function()
+	tweenService:Create(imageButton, TweenInfo.new(0.2), { Size = UDim2.new(0,58,0,58), BackgroundTransparency = 0.12 }):Play()
+end)
+
+local frame = Instance.new("Frame")
+frame.Size                  = UDim2.new(0, 350, 0, 620)
+frame.Position              = UDim2.new(0, 80, 0, 20)
+frame.BackgroundColor3      = v10.bg
+frame.BackgroundTransparency = 0.05
+frame.BorderSizePixel       = 0
+frame.Visible               = false
+frame.ClipsDescendants      = true
+frame.Parent                = advancedCopyGUI
+
+f5(frame, v10.accent, 0.5, 25)
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 14)
+
+local uiStroke2 = Instance.new("UIStroke")
+uiStroke2.Color       = v10.accent
+uiStroke2.Thickness   = 2
+uiStroke2.Transparency = 0.3
+uiStroke2.Parent      = frame
+
+-- Header
+local frame2 = Instance.new("Frame")
+frame2.Size            = UDim2.new(1, 0, 0, 42)
+frame2.BackgroundColor3 = v10.bgLight
+frame2.BorderSizePixel = 0
+frame2.Active          = true
+frame2.Parent          = frame
+Instance.new("UICorner", frame2).CornerRadius = UDim.new(0, 14)
+
+local textLabel2 = Instance.new("TextLabel")
+textLabel2.Size               = UDim2.new(1,-40,0,22)
+textLabel2.Position           = UDim2.new(0,15,0,5)
+textLabel2.BackgroundTransparency = 1
+textLabel2.Text               = "نظام النسخ المتقدم"
+textLabel2.TextColor3         = v10.accent
+textLabel2.Font               = Enum.Font.GothamBlack
+textLabel2.TextSize           = 15
+textLabel2.TextXAlignment     = Enum.TextXAlignment.Left
+textLabel2.Parent             = frame2
+
+local textLabel3 = Instance.new("TextLabel")
+textLabel3.Size               = UDim2.new(1,-40,0,12)
+textLabel3.Position           = UDim2.new(0,15,0,27)
+textLabel3.BackgroundTransparency = 1
+textLabel3.Text               = "L3 COPY SYSTEM"
+textLabel3.TextColor3         = v10.textDim
+textLabel3.Font               = Enum.Font.Gotham
+textLabel3.TextSize           = 9
+textLabel3.TextXAlignment     = Enum.TextXAlignment.Left
+textLabel3.Parent             = frame2
+
+local textButton = Instance.new("TextButton")
+textButton.Size            = UDim2.new(0,30,0,30)
+textButton.Position        = UDim2.new(1,-38,0.5,-15)
+textButton.BackgroundColor3 = v10.danger
+textButton.Text            = "x"
+textButton.TextColor3      = Color3.new(1,1,1)
+textButton.Font            = Enum.Font.GothamBold
+textButton.TextSize        = 16
+textButton.Parent          = frame2
+Instance.new("UICorner", textButton).CornerRadius = UDim.new(0, 7)
+textButton.MouseButton1Click:Connect(function()
+	frame.Visible = false
+	textLabel.Text = "COPY"
+end)
+
+local scrollingFrame = Instance.new("ScrollingFrame")
+scrollingFrame.Size                  = UDim2.new(1,-10,1,-48)
+scrollingFrame.Position              = UDim2.new(0,5,0,46)
+scrollingFrame.BackgroundTransparency = 1
+scrollingFrame.BorderSizePixel       = 0
+scrollingFrame.ScrollBarThickness    = 3
+scrollingFrame.ScrollBarImageColor3  = v10.accent
+scrollingFrame.CanvasSize            = UDim2.new(0,0,0,1100)
+scrollingFrame.Parent                = frame
+
+-- Settings section
+local frame3 = Instance.new("Frame")
+frame3.Size                  = UDim2.new(1,-20,0,150)
+frame3.Position              = UDim2.new(0,10,0,5)
+frame3.BackgroundColor3      = v10.bgLight
+frame3.BackgroundTransparency = 0.3
+frame3.Parent                = scrollingFrame
+Instance.new("UICorner", frame3).CornerRadius = UDim.new(0, 10)
+
+local textLabel4 = Instance.new("TextLabel")
+textLabel4.Size               = UDim2.new(1,-10,0,20)
+textLabel4.Position           = UDim2.new(0,5,0,5)
+textLabel4.BackgroundTransparency = 1
+textLabel4.Text               = "⚙️ اعدادات النسخ"
+textLabel4.TextColor3         = v10.accent
+textLabel4.Font               = Enum.Font.GothamBold
+textLabel4.TextSize           = 11
+textLabel4.TextXAlignment     = Enum.TextXAlignment.Left
+textLabel4.Parent             = frame3
+
+local frame4 = Instance.new("Frame")
+frame4.Size               = UDim2.new(1,-10,0,24)
+frame4.Position           = UDim2.new(0,5,0,28)
+frame4.BackgroundTransparency = 1
+frame4.Parent             = frame3
+
+local textButton2 = Instance.new("TextButton")
+textButton2.Size            = UDim2.new(0.32,0,1,0)
+textButton2.BackgroundColor3 = Color3.fromRGB(50,30,70)
+textButton2.Text            = "وهمي"
+textButton2.TextColor3      = v10.text
+textButton2.Font            = Enum.Font.GothamBold
+textButton2.TextSize        = 11
+textButton2.Parent          = frame4
+Instance.new("UICorner", textButton2).CornerRadius = UDim.new(0, 6)
+
+local textButton3 = Instance.new("TextButton")
+textButton3.Size            = UDim2.new(0.32,0,1,0)
+textButton3.Position        = UDim2.new(0.34,0,0,0)
+textButton3.BackgroundColor3 = v10.accentDark
+textButton3.Text            = "عادي"
+textButton3.TextColor3      = Color3.new(1,1,1)
+textButton3.Font            = Enum.Font.GothamBold
+textButton3.TextSize        = 11
+textButton3.Parent          = frame4
+Instance.new("UICorner", textButton3).CornerRadius = UDim.new(0, 6)
+
+local textButton4 = Instance.new("TextButton")
+textButton4.Size            = UDim2.new(0.32,0,1,0)
+textButton4.Position        = UDim2.new(0.68,0,0,0)
+textButton4.BackgroundColor3 = Color3.fromRGB(50,30,70)
+textButton4.Text            = "غامض"
+textButton4.TextColor3      = v10.text
+textButton4.Font            = Enum.Font.GothamBold
+textButton4.TextSize        = 11
+textButton4.Parent          = frame4
+Instance.new("UICorner", textButton4).CornerRadius = UDim.new(0, 6)
+
+local frame5 = Instance.new("Frame")
+frame5.Size               = UDim2.new(1,-10,0,24)
+frame5.Position           = UDim2.new(0,5,0,56)
+frame5.BackgroundTransparency = 1
+frame5.Parent             = frame3
+
+local textButton5 = Instance.new("TextButton")
+textButton5.Size            = UDim2.new(1,0,1,0)
+textButton5.BackgroundColor3 = Color3.fromRGB(50,30,70)
+textButton5.Text            = "مخفي: OFF"
+textButton5.TextColor3      = v10.text
+textButton5.Font            = Enum.Font.GothamBold
+textButton5.TextSize        = 11
+textButton5.Parent          = frame5
+Instance.new("UICorner", textButton5).CornerRadius = UDim.new(0, 6)
+
+local frame6 = Instance.new("Frame")
+frame6.Size               = UDim2.new(1,-10,0,24)
+frame6.Position           = UDim2.new(0,5,0,84)
+frame6.BackgroundTransparency = 1
+frame6.Parent             = frame3
+
+local textButton6 = Instance.new("TextButton")
+textButton6.Size            = UDim2.new(1,0,1,0)
+textButton6.BackgroundColor3 = Color3.fromRGB(50,30,70)
+textButton6.Text            = "وضع التنفيذ الثاني: OFF"
+textButton6.TextColor3      = v10.text
+textButton6.Font            = Enum.Font.GothamBold
+textButton6.TextSize        = 11
+textButton6.Parent          = frame6
+Instance.new("UICorner", textButton6).CornerRadius = UDim.new(0, 6)
+
+local frame7 = Instance.new("Frame")
+frame7.Size               = UDim2.new(1,-10,0,24)
+frame7.Position           = UDim2.new(0,5,0,112)
+frame7.BackgroundTransparency = 1
+frame7.Parent             = frame3
+
+local textButton7 = Instance.new("TextButton")
+textButton7.Size            = UDim2.new(1,0,1,0)
+textButton7.BackgroundColor3 = Color3.fromRGB(50,30,70)
+textButton7.Text            = "النسخ اللا نهائي: OFF"
+textButton7.TextColor3      = v10.text
+textButton7.Font            = Enum.Font.GothamBold
+textButton7.TextSize        = 11
+textButton7.Parent          = frame7
+Instance.new("UICorner", textButton7).CornerRadius = UDim.new(0, 6)
+
+local function f8()
+	if copyType == "virtual" then
+		textButton2.BackgroundColor3 = v10.accentDark; textButton2.TextColor3 = Color3.new(1,1,1)
+		textButton3.BackgroundColor3 = Color3.fromRGB(50,30,70); textButton3.TextColor3 = v10.text
+		textButton4.BackgroundColor3 = Color3.fromRGB(50,30,70); textButton4.TextColor3 = v10.text
+		gamedMode = false
+	elseif copyType == "normal" then
+		textButton3.BackgroundColor3 = v10.accentDark; textButton3.TextColor3 = Color3.new(1,1,1)
+		textButton2.BackgroundColor3 = Color3.fromRGB(50,30,70); textButton2.TextColor3 = v10.text
+		textButton4.BackgroundColor3 = Color3.fromRGB(50,30,70); textButton4.TextColor3 = v10.text
+		gamedMode = false
+	elseif copyType == "gamed" then
+		textButton4.BackgroundColor3 = v10.accentDark; textButton4.TextColor3 = Color3.new(1,1,1)
+		textButton2.BackgroundColor3 = Color3.fromRGB(50,30,70); textButton2.TextColor3 = v10.text
+		textButton3.BackgroundColor3 = Color3.fromRGB(50,30,70); textButton3.TextColor3 = v10.text
+		gamedMode = true
+	end
+	textButton5.BackgroundColor3 = hiddenMode and v10.purple or Color3.fromRGB(50,30,70)
+	textButton5.Text             = hiddenMode and "مخفي: ON" or "مخفي: OFF"
+	textButton5.TextColor3       = hiddenMode and Color3.new(1,1,1) or v10.text
+
+	textButton6.BackgroundColor3 = secondExecutionMode and v10.accentDark or Color3.fromRGB(50,30,70)
+	textButton6.Text             = secondExecutionMode and "وضع التنفيذ الثاني: ON" or "وضع التنفيذ الثاني: OFF"
+	textButton6.TextColor3       = secondExecutionMode and Color3.new(1,1,1) or v10.text
+
+	textButton7.BackgroundColor3 = infiniteCopy and v10.accentDark or Color3.fromRGB(50,30,70)
+	textButton7.Text             = infiniteCopy and "النسخ اللا نهائي: ON" or "النسخ اللا نهائي: OFF"
+	textButton7.TextColor3       = infiniteCopy and Color3.new(1,1,1) or v10.text
+end
+
+textButton2.MouseButton1Click:Connect(function() copyType = "virtual"; f8() end)
+textButton3.MouseButton1Click:Connect(function() copyType = "normal";  f8() end)
+textButton4.MouseButton1Click:Connect(function() copyType = "gamed";   f8() end)
+textButton5.MouseButton1Click:Connect(function() hiddenMode = not hiddenMode; f8() end)
+textButton6.MouseButton1Click:Connect(function() secondExecutionMode = not secondExecutionMode; f8() end)
+textButton7.MouseButton1Click:Connect(function() infiniteCopy = not infiniteCopy; f8() end)
+
+-- Saved players section
+local frame8 = Instance.new("Frame")
+frame8.Size                  = UDim2.new(1,-20,0,90)
+frame8.Position              = UDim2.new(0,10,0,163)
+frame8.BackgroundColor3      = v10.bgLight
+frame8.BackgroundTransparency = 0.3
+frame8.Parent                = scrollingFrame
+Instance.new("UICorner", frame8).CornerRadius = UDim.new(0, 10)
+
+local textLabel5 = Instance.new("TextLabel")
+textLabel5.Size               = UDim2.new(1,-10,0,20)
+textLabel5.Position           = UDim2.new(0,5,0,5)
+textLabel5.BackgroundTransparency = 1
+textLabel5.Text               = "💾 اللاعبين المحفوظين"
+textLabel5.TextColor3         = v10.accent
+textLabel5.Font               = Enum.Font.GothamBold
+textLabel5.TextSize           = 11
+textLabel5.TextXAlignment     = Enum.TextXAlignment.Left
+textLabel5.Parent             = frame8
+
+local frame9 = Instance.new("Frame")
+frame9.Size            = UDim2.new(1,-10,0,30)
+frame9.Position        = UDim2.new(0,5,0,28)
+frame9.BackgroundColor3 = Color3.fromRGB(35,20,55)
+frame9.Parent          = frame8
+Instance.new("UICorner", frame9).CornerRadius = UDim.new(0, 6)
+
+local scrollingFrame2 = Instance.new("ScrollingFrame")
+scrollingFrame2.Size                  = UDim2.new(1,-5,1,-5)
+scrollingFrame2.Position              = UDim2.new(0,2,0,2)
+scrollingFrame2.BackgroundTransparency = 1
+scrollingFrame2.BorderSizePixel       = 0
+scrollingFrame2.ScrollBarThickness    = 2
+scrollingFrame2.ScrollBarImageColor3  = v10.accent
+scrollingFrame2.CanvasSize            = UDim2.new(0,0,0,0)
+scrollingFrame2.Parent                = frame9
+
+local frame10 = Instance.new("Frame")
+frame10.Size               = UDim2.new(1,-10,0,22)
+frame10.Position           = UDim2.new(0,5,0,63)
+frame10.BackgroundTransparency = 1
+frame10.Parent             = frame8
+
+local textButton8 = Instance.new("TextButton")
+textButton8.Size            = UDim2.new(0.48,0,1,0)
+textButton8.BackgroundColor3 = v10.accentDark
+textButton8.Text            = "حفظ"
+textButton8.TextColor3      = Color3.new(1,1,1)
+textButton8.Font            = Enum.Font.GothamBold
+textButton8.TextSize        = 10
+textButton8.Parent          = frame10
+Instance.new("UICorner", textButton8).CornerRadius = UDim.new(0, 5)
+
+local textButton9 = Instance.new("TextButton")
+textButton9.Size            = UDim2.new(0.48,0,1,0)
+textButton9.Position        = UDim2.new(0.52,0,0,0)
+textButton9.BackgroundColor3 = v10.danger
+textButton9.Text            = "مسح"
+textButton9.TextColor3      = Color3.new(1,1,1)
+textButton9.Font            = Enum.Font.GothamBold
+textButton9.TextSize        = 10
+textButton9.Parent          = frame10
+Instance.new("UICorner", textButton9).CornerRadius = UDim.new(0, 5)
+
+-- Current players section
+local frame11 = Instance.new("Frame")
+frame11.Size                  = UDim2.new(1,-20,0,140)
+frame11.Position              = UDim2.new(0,10,0,263)
+frame11.BackgroundColor3      = v10.bgLight
+frame11.BackgroundTransparency = 0.3
+frame11.Parent                = scrollingFrame
+Instance.new("UICorner", frame11).CornerRadius = UDim.new(0, 10)
+
+local textLabel6 = Instance.new("TextLabel")
+textLabel6.Size               = UDim2.new(1,-10,0,20)
+textLabel6.Position           = UDim2.new(0,5,0,5)
+textLabel6.BackgroundTransparency = 1
+textLabel6.Text               = "👥 اللاعبين الحاليين"
+textLabel6.TextColor3         = v10.accent
+textLabel6.Font               = Enum.Font.GothamBold
+textLabel6.TextSize           = 11
+textLabel6.TextXAlignment     = Enum.TextXAlignment.Left
+textLabel6.Parent             = frame11
+
+local frame12 = Instance.new("Frame")
+frame12.Size            = UDim2.new(1,-10,0,78)
+frame12.Position        = UDim2.new(0,5,0,28)
+frame12.BackgroundColor3 = Color3.fromRGB(35,20,55)
+frame12.Parent          = frame11
+Instance.new("UICorner", frame12).CornerRadius = UDim.new(0, 6)
+
+local scrollingFrame3 = Instance.new("ScrollingFrame")
+scrollingFrame3.Size                  = UDim2.new(1,-5,1,-5)
+scrollingFrame3.Position              = UDim2.new(0,2,0,2)
+scrollingFrame3.BackgroundTransparency = 1
+scrollingFrame3.BorderSizePixel       = 0
+scrollingFrame3.ScrollBarThickness    = 2
+scrollingFrame3.ScrollBarImageColor3  = v10.accent
+scrollingFrame3.CanvasSize            = UDim2.new(0,0,0,0)
+scrollingFrame3.Parent                = frame12
+
+local frame13 = Instance.new("Frame")
+frame13.Size            = UDim2.new(1,-10,0,26)
+frame13.Position        = UDim2.new(0,5,0,110)
+frame13.BackgroundColor3 = Color3.fromRGB(45,25,70)
+frame13.Parent          = frame11
+Instance.new("UICorner", frame13).CornerRadius = UDim.new(0, 6)
+
+local textLabel7 = Instance.new("TextLabel")
+textLabel7.Size               = UDim2.new(1,-5,1,0)
+textLabel7.BackgroundTransparency = 1
+textLabel7.Text               = "لا يوجد مختارين"
+textLabel7.TextColor3         = v10.text
+textLabel7.Font               = Enum.Font.GothamBold
+textLabel7.TextSize           = 10
+textLabel7.Parent             = frame13
+
+local frame14 = Instance.new("Frame")
+frame14.Size            = UDim2.new(1,-20,0,24)
+frame14.Position        = UDim2.new(0,10,0,413)
+frame14.BackgroundColor3 = Color3.fromRGB(90,40,150)
+frame14.Parent          = scrollingFrame
+Instance.new("UICorner", frame14).CornerRadius = UDim.new(0, 6)
+
+local textLabel8 = Instance.new("TextLabel")
+textLabel8.Size               = UDim2.new(1,-5,1,0)
+textLabel8.BackgroundTransparency = 1
+textLabel8.Text               = "اللاعب النشط: لا يوجد"
+textLabel8.TextColor3         = v10.text
+textLabel8.Font               = Enum.Font.GothamBold
+textLabel8.TextSize           = 10
+textLabel8.TextXAlignment     = Enum.TextXAlignment.Center
+textLabel8.Parent             = frame14
+
+-- Commands tabs section
+local frame15 = Instance.new("Frame")
+frame15.Size                  = UDim2.new(1,-20,0,155)
+frame15.Position              = UDim2.new(0,10,0,447)
+frame15.BackgroundColor3      = v10.bgLight
+frame15.BackgroundTransparency = 0.3
+frame15.Parent                = scrollingFrame
+Instance.new("UICorner", frame15).CornerRadius = UDim.new(0, 10)
+
+local textLabel9 = Instance.new("TextLabel")
+textLabel9.Size               = UDim2.new(1,-10,0,20)
+textLabel9.Position           = UDim2.new(0,5,0,5)
+textLabel9.BackgroundTransparency = 1
+textLabel9.Text               = "📋 تبويبات الأوامر"
+textLabel9.TextColor3         = v10.accent
+textLabel9.Font               = Enum.Font.GothamBold
+textLabel9.TextSize           = 11
+textLabel9.TextXAlignment     = Enum.TextXAlignment.Left
+textLabel9.Parent             = frame15
+
+local scrollingFrame4 = Instance.new("ScrollingFrame")
+scrollingFrame4.Size                  = UDim2.new(1,-40,0,30)
+scrollingFrame4.Position              = UDim2.new(0,5,0,28)
+scrollingFrame4.BackgroundTransparency = 1
+scrollingFrame4.BorderSizePixel       = 0
+scrollingFrame4.ScrollBarThickness    = 2
+scrollingFrame4.ScrollBarImageColor3  = v10.accent
+scrollingFrame4.CanvasSize            = UDim2.new(0,0,0,0)
+scrollingFrame4.ScrollingDirection    = Enum.ScrollingDirection.X
+scrollingFrame4.Parent                = frame15
+
+local uiListLayout = Instance.new("UIListLayout")
+uiListLayout.FillDirection = Enum.FillDirection.Horizontal
+uiListLayout.Padding       = UDim.new(0, 3)
+uiListLayout.Parent        = scrollingFrame4
+
+uiListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	scrollingFrame4.CanvasSize = UDim2.new(0, uiListLayout.AbsoluteContentSize.X + 10, 0, 0)
+end)
+
+local textButton10 = Instance.new("TextButton")
+textButton10.Size            = UDim2.new(0,30,0,28)
+textButton10.Position        = UDim2.new(1,-35,0,29)
+textButton10.BackgroundColor3 = v10.accentDark
+textButton10.Text            = "+"
+textButton10.TextColor3      = Color3.new(1,1,1)
+textButton10.Font            = Enum.Font.GothamBold
+textButton10.TextSize        = 16
+textButton10.Parent          = frame15
+Instance.new("UICorner", textButton10).CornerRadius = UDim.new(0, 6)
+
+local textBox = Instance.new("TextBox")
+textBox.Size            = UDim2.new(1,-10,0,48)
+textBox.Position        = UDim2.new(0,5,0,68)
+textBox.BackgroundColor3 = Color3.fromRGB(20,10,35)
+textBox.TextColor3      = v10.accent
+textBox.Font            = Enum.Font.Gotham
+textBox.TextSize        = 10
+textBox.TextWrapped     = true
+textBox.TextXAlignment  = Enum.TextXAlignment.Center
+textBox.ClearTextOnFocus = false
+textBox.Parent          = frame15
+Instance.new("UICorner", textBox).CornerRadius = UDim.new(0, 6)
+
+local textButton11 = Instance.new("TextButton")
+textButton11.Size            = UDim2.new(0,100,0,24)
+textButton11.Position        = UDim2.new(0,5,0,125)
+textButton11.BackgroundColor3 = v10.purple
+textButton11.Text            = "حفظ الإعدادات"
+textButton11.TextColor3      = Color3.new(1,1,1)
+textButton11.Font            = Enum.Font.GothamBold
+textButton11.TextSize        = 10
+textButton11.Parent          = frame15
+Instance.new("UICorner", textButton11).CornerRadius = UDim.new(0, 6)
+
+textButton11.MouseButton1Click:Connect(function()
+	textButton11.Text = "تم الحفظ!"
+	task.wait(1)
+	textButton11.Text = "حفظ الإعدادات"
+end)
+
+-- Add tab popup
+local frame16 = Instance.new("Frame")
+frame16.Size            = UDim2.new(0,280,0,160)
+frame16.Position        = UDim2.new(0.5,-140,0.5,-80)
+frame16.BackgroundColor3 = v10.bg
+frame16.BorderSizePixel = 0
+frame16.Visible         = false
+frame16.Parent          = advancedCopyGUI
+Instance.new("UICorner", frame16).CornerRadius = UDim.new(0, 12)
+
+local uiStroke3 = Instance.new("UIStroke")
+uiStroke3.Color   = v10.accent
+uiStroke3.Thickness = 2
+uiStroke3.Parent  = frame16
+
+local textLabel10 = Instance.new("TextLabel")
+textLabel10.Size            = UDim2.new(1,0,0,30)
+textLabel10.BackgroundColor3 = v10.bgLight
+textLabel10.Text            = "إضافة تبويب جديد"
+textLabel10.TextColor3      = v10.accent
+textLabel10.Font            = Enum.Font.GothamBold
+textLabel10.TextSize        = 13
+textLabel10.Parent          = frame16
+Instance.new("UICorner", textLabel10).CornerRadius = UDim.new(0, 12)
+
+local textBox2 = Instance.new("TextBox")
+textBox2.Size            = UDim2.new(1,-20,0,30)
+textBox2.Position        = UDim2.new(0,10,0,35)
+textBox2.PlaceholderText = "اسم التبويب..."
+textBox2.Text            = ""
+textBox2.BackgroundColor3 = Color3.fromRGB(35,20,55)
+textBox2.TextColor3      = v10.text
+textBox2.Font            = Enum.Font.Gotham
+textBox2.TextSize        = 12
+textBox2.Parent          = frame16
+Instance.new("UICorner", textBox2).CornerRadius = UDim.new(0, 6)
+
+local textBox3 = Instance.new("TextBox")
+textBox3.Size            = UDim2.new(1,-20,0,50)
+textBox3.Position        = UDim2.new(0,10,0,70)
+textBox3.PlaceholderText = "الأوامر..."
+textBox3.Text            = ""
+textBox3.BackgroundColor3 = Color3.fromRGB(35,20,55)
+textBox3.TextColor3      = v10.text
+textBox3.Font            = Enum.Font.Gotham
+textBox3.TextSize        = 12
+textBox3.MultiLine       = true
+textBox3.Parent          = frame16
+Instance.new("UICorner", textBox3).CornerRadius = UDim.new(0, 6)
+
+local textButton12 = Instance.new("TextButton")
+textButton12.Size            = UDim2.new(0,100,0,28)
+textButton12.Position        = UDim2.new(0.5,-50,0,125)
+textButton12.BackgroundColor3 = v10.accentDark
+textButton12.Text            = "إضافة"
+textButton12.TextColor3      = Color3.new(1,1,1)
+textButton12.Font            = Enum.Font.GothamBold
+textButton12.TextSize        = 12
+textButton12.Parent          = frame16
+Instance.new("UICorner", textButton12).CornerRadius = UDim.new(0, 7)
+
+local textButton13 = Instance.new("TextButton")
+textButton13.Size            = UDim2.new(0,24,0,24)
+textButton13.Position        = UDim2.new(1,-28,0,3)
+textButton13.BackgroundColor3 = v10.danger
+textButton13.Text            = "✕"
+textButton13.TextColor3      = Color3.new(1,1,1)
+textButton13.Font            = Enum.Font.GothamBold
+textButton13.TextSize        = 12
+textButton13.Parent          = frame16
+Instance.new("UICorner", textButton13).CornerRadius = UDim.new(0, 6)
+textButton13.MouseButton1Click:Connect(function() frame16.Visible = false end)
+
+local color4 = Color3.fromRGB(0, 150, 80)
+local color5 = Color3.fromRGB(200, 120, 50)
+local color6 = Color3.fromRGB(150, 80, 180)
+local color7 = Color3.fromRGB(200, 70, 70)
+
+local v16 = {
+	[1]  = color4,
+	[2]  = color5,
+	[3]  = color6,
+	[4]  = color7,
+	[5]  = Color3.fromRGB(100, 150, 200),
+	[6]  = Color3.fromRGB(0, 200, 150),
+	[7]  = Color3.fromRGB(180, 100, 50),
+	[8]  = Color3.fromRGB(100, 100, 200),
+	[9]  = Color3.fromRGB(200, 100, 200),
+	[10] = Color3.fromRGB(50, 200, 100),
+}
+
+local v17 = {}
+local v18 = nil
+
+local function f9(p5, p6)
+	for index, value in ipairs(v17) do
+		if index == p5 then
+			value.BackgroundColor3 = v10.accentDark
+		elseif index <= 10 then
+			value.BackgroundColor3 = v16[index]
+		else
+			value.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+		end
+	end
+	v18 = p5
+	if p5 <= 10 then
+		textBox.Text = v9[p5].commands
+	else
+		local v19 = p5 - 10
+		if customTabs[v19] then
+			textBox.Text = customTabs[v19].commands
+		end
+	end
+end
+
+local refreshTabs
+refreshTabs = function()
+	for _, value2 in ipairs(v17) do value2:Destroy() end
+	v17 = {}
+	v18 = nil
+
+	for i = 1, 10 do
+		local v20 = i
+		local textButton14 = Instance.new("TextButton")
+		textButton14.Size            = UDim2.new(0,80,0,28)
+		textButton14.BackgroundColor3 = v16[v20]
+		textButton14.Text            = v9[v20].name
+		textButton14.TextColor3      = Color3.fromRGB(255,255,255)
+		textButton14.Font            = Enum.Font.GothamBold
+		textButton14.TextSize        = 8
+		textButton14.Parent          = scrollingFrame4
+		Instance.new("UICorner", textButton14).CornerRadius = UDim.new(0, 5)
+		textButton14.MouseButton1Click:Connect(function() f9(v20, false) end)
+		v17[v20] = textButton14
+	end
+
+	for index3, value3 in ipairs(customTabs) do
+		local v21 = index3
+		local v22 = 10 + v21
+		local textButton15 = Instance.new("TextButton")
+		textButton15.Size            = UDim2.new(0,80,0,28)
+		textButton15.BackgroundColor3 = Color3.fromRGB(80,80,80)
+		textButton15.Text            = value3.name
+		textButton15.TextColor3      = Color3.fromRGB(255,255,255)
+		textButton15.Font            = Enum.Font.GothamBold
+		textButton15.TextSize        = 8
+		textButton15.Parent          = scrollingFrame4
+		Instance.new("UICorner", textButton15).CornerRadius = UDim.new(0, 5)
+
+		local textButton16 = Instance.new("TextButton")
+		textButton16.Size            = UDim2.new(0,16,0,16)
+		textButton16.Position        = UDim2.new(1,-18,0,6)
+		textButton16.BackgroundColor3 = v10.danger
+		textButton16.Text            = "×"
+		textButton16.TextColor3      = Color3.new(1,1,1)
+		textButton16.Font            = Enum.Font.GothamBold
+		textButton16.TextSize        = 10
+		textButton16.Parent          = textButton15
+		Instance.new("UICorner", textButton16).CornerRadius = UDim.new(0, 4)
+
+		textButton16.MouseButton1Click:Connect(function()
+			table.remove(customTabs, v21)
+			refreshTabs()
+		end)
+		textButton15.MouseButton1Click:Connect(function() f9(v22, true) end)
+		v17[v22] = textButton15
+	end
+
+	if v18 and v18 <= #v17 then
+		f9(v18, v18 > 10)
+	elseif #v17 > 0 then
+		f9(1, false)
+	end
+end
+
+textButton12.MouseButton1Click:Connect(function()
+	local text = textBox2.Text
+	local text2 = textBox3.Text
+	if text ~= "" and text2 ~= "" then
+		table.insert(customTabs, { name = text, commands = text2 })
+		refreshTabs()
+		textBox2.Text = ""
+		textBox3.Text = ""
+		frame16.Visible = false
+	end
+end)
+textButton10.MouseButton1Click:Connect(function() frame16.Visible = true end)
+
+-- Action buttons
+local frame17 = Instance.new("Frame")
+frame17.Size                  = UDim2.new(1,-20,0,150)
+frame17.Position              = UDim2.new(0,10,0,612)
+frame17.BackgroundColor3      = v10.bgLight
+frame17.BackgroundTransparency = 0.3
+frame17.Parent                = scrollingFrame
+Instance.new("UICorner", frame17).CornerRadius = UDim.new(0, 10)
+
+local textButton17 = Instance.new("TextButton")
+textButton17.Size            = UDim2.new(0.9,0,0,32)
+textButton17.Position        = UDim2.new(0.05,0,0.04,0)
+textButton17.BackgroundColor3 = v10.accentDark
+textButton17.Text            = "تفعيل النسخ"
+textButton17.TextColor3      = Color3.new(1,1,1)
+textButton17.Font            = Enum.Font.GothamBold
+textButton17.TextSize        = 12
+textButton17.Parent          = frame17
+Instance.new("UICorner", textButton17).CornerRadius = UDim.new(0, 7)
+
+local textButton18 = Instance.new("TextButton")
+textButton18.Size            = UDim2.new(0.9,0,0,32)
+textButton18.Position        = UDim2.new(0.05,0,0.29,0)
+textButton18.BackgroundColor3 = v10.accentDark
+textButton18.Text            = "سبام نسخ مشرف :OFF"
+textButton18.TextColor3      = Color3.new(1,1,1)
+textButton18.Font            = Enum.Font.GothamBold
+textButton18.TextSize        = 12
+textButton18.Parent          = frame17
+Instance.new("UICorner", textButton18).CornerRadius = UDim.new(0, 7)
+
+local textButton19 = Instance.new("TextButton")
+textButton19.Size            = UDim2.new(0.9,0,0,32)
+textButton19.Position        = UDim2.new(0.05,0,0.54,0)
+textButton19.BackgroundColor3 = v10.accentDark
+textButton19.Text            = "سبام اوامر غامض :OFF"
+textButton19.TextColor3      = Color3.new(1,1,1)
+textButton19.Font            = Enum.Font.GothamBold
+textButton19.TextSize        = 12
+textButton19.Parent          = frame17
+Instance.new("UICorner", textButton19).CornerRadius = UDim.new(0, 7)
+
+local textButton20 = Instance.new("TextButton")
+textButton20.Size            = UDim2.new(0.9,0,0,28)
+textButton20.Position        = UDim2.new(0.05,0,0.79,0)
+textButton20.BackgroundColor3 = v10.danger
+textButton20.Text            = "إيقاف"
+textButton20.TextColor3      = Color3.new(1,1,1)
+textButton20.Font            = Enum.Font.GothamBold
+textButton20.TextSize        = 12
+textButton20.Parent          = frame17
+Instance.new("UICorner", textButton20).CornerRadius = UDim.new(0, 7)
+
+-- ── Logic ────────────────────────────────────────────────────────────────────
+local function f10(p7)
+	if copyType == "virtual" then return p7 end
+	return p7:sub(1, 3)
+end
+
+local function f11()
+	local v23 = {}
+	for key, _ in pairs(v7) do table.insert(v23, key) end
+	if     #v23 >= 4 then return v23[1], v23[2], v23[3], v23[4]
+	elseif #v23 == 3 then return v23[1], v23[2], v23[3]
+	elseif #v23 == 2 then return v23[1], v23[2]
+	elseif #v23 == 1 then return v23[1], v23[1], v23[1], v23[1]
+	else                   return nil
+	end
+end
+
+local function f12(p8, p9)
+	f3((p8:gsub(" sa", " " .. p9)))
+end
+
+local function f13()
+	for key2, _ in pairs(savedPlayers) do
+		for _, value12 in ipairs(players:GetPlayers()) do
+			if value12.Name == key2 then return key2 end
+		end
+	end
+	for key3, _ in pairs(v7) do
+		for _, value8 in ipairs(players:GetPlayers()) do
+			if value8.Name == key3 then return key3 end
+		end
+	end
+	return nil
+end
+
+local function f14()
+	local count = 0
+	for _ in pairs(v7) do count = count + 1 end
+	if     count == 0 then textLabel7.Text = "لا يوجد مختارين"
+	elseif count == 1 then textLabel7.Text = "مختار: " .. next(v7)
+	else                    textLabel7.Text = count .. " مختارين"
+	end
+end
+
+local f16
+
+local function f15()
+	for _, value9 in ipairs(scrollingFrame2:GetChildren()) do
+		if value9:IsA("TextButton") then value9:Destroy() end
+	end
+	local count2 = 0
+	for key5, _ in pairs(savedPlayers) do
+		local v24 = key5
+		local textButton21 = Instance.new("TextButton")
+		textButton21.Size            = UDim2.new(1,-5,0,20)
+		textButton21.Position        = UDim2.new(0,2,0, count2 * 22 + 2)
+		textButton21.BackgroundColor3 = v10.accentDark
+		textButton21.Text            = v24
+		textButton21.TextColor3      = Color3.new(1,1,1)
+		textButton21.Font            = Enum.Font.Gotham
+		textButton21.TextSize        = 10
+		textButton21.Parent          = scrollingFrame2
+		Instance.new("UICorner", textButton21).CornerRadius = UDim.new(0, 4)
+
+		textButton21.MouseButton1Click:Connect(function()
+			v7[v24] = true
+			f16()
+			f14()
+		end)
+		textButton21.MouseButton2Click:Connect(function()
+			savedPlayers[v24] = nil
+			f15()
+		end)
+		count2 = count2 + 1
+	end
+	scrollingFrame2.CanvasSize = UDim2.new(0, 0, 0, count2 * 22 + 5)
+end
+
+local v25, v30
+
+local function f17()
+	local v26 = {}
+	for key6, _ in pairs(v7) do
+		local v27 = false
+		for _, value12 in ipairs(players:GetPlayers()) do
+			if value12.Name == key6 then v27 = true; break end
+		end
+		if not v27 then table.insert(v26, key6) end
+	end
+	for _, value13 in ipairs(v26) do
+		v7[value13] = nil
+		if v25 == value13 then
+			v25 = nil
+			textLabel8.Text = "اللاعب النشط: خرج"
+		end
+	end
+	if #v26 > 0 then f16(); f14() end
+end
+
+f16 = function()
+	for _, value14 in ipairs(scrollingFrame3:GetChildren()) do
+		if value14:IsA("TextButton") then value14:Destroy() end
+	end
+	local count3 = 0
+	for _, value15 in ipairs(players:GetPlayers()) do
+		local v28 = value15
+		if v28 ~= localPlayer then
+			local textButton22 = Instance.new("TextButton")
+			textButton22.Size = UDim2.new(1,-5,0,20)
+			textButton22.Position = UDim2.new(0,2,0, count3 * 22 + 2)
+			if v7[v28.Name] then
+				textButton22.BackgroundColor3 = v10.accentDark
+				textButton22.Text = "✓ " .. v28.Name
+			else
+				textButton22.BackgroundColor3 = Color3.fromRGB(50,30,70)
+				textButton22.Text = v28.Name
+			end
+			textButton22.TextColor3 = Color3.new(1,1,1)
+			textButton22.Font       = Enum.Font.Gotham
+			textButton22.TextSize   = 10
+			textButton22.Parent     = scrollingFrame3
+			Instance.new("UICorner", textButton22).CornerRadius = UDim.new(0, 4)
+
+			textButton22.MouseButton1Click:Connect(function()
+				if v7[v28.Name] then v7[v28.Name] = nil
+				else v7[v28.Name] = true end
+				f16(); f14()
+			end)
+			count3 = count3 + 1
+		end
+	end
+	scrollingFrame3.CanvasSize = UDim2.new(0, 0, 0, count3 * 22 + 5)
+end
+
+textButton8.MouseButton1Click:Connect(function()
+	for key7, _ in pairs(v7) do savedPlayers[key7] = true end
+	f15()
+end)
+
+textButton9.MouseButton1Click:Connect(function()
+	savedPlayers = {}; f15()
+end)
+
+local v29, v32
+
+textButton18.MouseButton1Click:Connect(function()
+	v1 = not v1
+	if v1 then
+		textButton18.Text = "سبام نسخ مشرف :ON"
+		textButton18.BackgroundColor3 = v10.success
+		v29 = task.spawn(function()
+			while v1 do
+				local v31 = f13()
+				if v31 or infiniteCopy then
+					if not v31 then v31 = v30 or "Player" end
+					if copyType == "virtual" then v31 = f10(v31) end
+					f12(v3[math.random(1, #v3)], v31)
+				end
+				task.wait(0.3)
+			end
+		end)
+	else
+		textButton18.Text = "سبام نسخ مشرف :OFF"
+		textButton18.BackgroundColor3 = v10.accentDark
+		if v29 then task.cancel(v29) end
+	end
+end)
+
+textButton19.MouseButton1Click:Connect(function()
+	v2 = not v2
+	if v2 then
+		textButton19.Text = "سبام اوامر غامض :ON"
+		textButton19.BackgroundColor3 = v10.success
+		v32 = task.spawn(function()
+			while v2 do
+				local v33 = f13()
+				if v33 or infiniteCopy then
+					if not v33 then v33 = v30 or "Player" end
+					if copyType == "virtual" then v33 = f10(v33) end
+					f12(v4[math.random(1, #v4)], v33)
+				end
+				task.wait(0.3)
+			end
+		end)
+	else
+		textButton19.Text = "سبام اوامر غامض :OFF"
+		textButton19.BackgroundColor3 = v10.accentDark
+		if v32 then task.cancel(v32) end
+	end
+end)
+
+local v34 = false
+imageButton.MouseButton1Click:Connect(function()
+	v34 = not v34
+	if v34 then
+		frame.Visible = true
+		frame.Size = UDim2.new(0,0,0,0)
+		tweenService:Create(frame, TweenInfo.new(0.25, Enum.EasingStyle.Back), { Size = UDim2.new(0,350,0,620) }):Play()
+		textLabel.Text = "✖"
+		f17(); f16(); f15(); f14()
+	else
+		tweenService:Create(frame, TweenInfo.new(0.2, Enum.EasingStyle.Back), { Size = UDim2.new(0,0,0,0) }):Play()
+		task.wait(0.2)
+		frame.Visible = false
+		textLabel.Text = "COPY"
+	end
+end)
+
+local v35
+
+textButton17.MouseButton1Click:Connect(function()
+	if v8 then
+		v8 = false
+		if v35 then task.cancel(v35) end
+		textButton17.Text = "تفعيل النسخ"
+		textButton17.BackgroundColor3 = v10.accentDark
+		v25 = nil; textLabel8.Text = "اللاعب النشط: متوقف"; v30 = nil
+		return
+	end
+
+	f17()
+
+	if not gamedMode then
+		local v36 = f13()
+		if not v36 then
+			if infiniteCopy and v30 then
+				v36 = v30
+			else
+				textButton17.Text = "اختر لاعب!"
+				task.wait(1)
+				textButton17.Text = "تفعيل النسخ"
+				return
+			end
+		end
+		v25 = v36; v30 = v36
+		textLabel8.Text = "اللاعب النشط: " .. v25
+	else
+		local v37, v38, v39, v40 = f11()
+		if not v37 then
+			if infiniteCopy and v30 then
+				v37 = v30; v38 = nil; v39 = nil; v40 = nil
+			else
+				textButton17.Text = "اختر لاعبين!"
+				task.wait(1)
+				textButton17.Text = "تفعيل النسخ"
+				return
+			end
+		end
+		if v37 then v30 = v37 end
+		textLabel8.Text = "غامض: " .. (v37 or "")
+			.. (v38 and " + "..v38 or "")
+			.. (v39 and " + "..v39 or "")
+			.. (v40 and " + "..v40 or "")
+	end
+
+	local text3 = textBox.Text
+	local v41 = {}
+	for match in text3:gmatch("[^\r\n]+") do
+		if match ~= "" then table.insert(v41, match) end
+	end
+
+	v8 = true
+	textButton17.Text = "إيقاف النسخ"
+	textButton17.BackgroundColor3 = v10.danger
+
+	v35 = task.spawn(function()
+		local v42
+
+		while v8 do
+			if not gamedMode then
+				local playerFound = false
+				for _, value17 in ipairs(players:GetPlayers()) do
+					if value17.Name == v25 then playerFound = true; break end
+				end
+
+				if not playerFound and not infiniteCopy then
+					f17()
+					local v44 = f13()
+					if not v44 then
+						v8 = false
+						textButton17.Text = "تفعيل النسخ"
+						textButton17.BackgroundColor3 = v10.accentDark
+						v25 = nil; textLabel8.Text = "انتهى الجميع"
+						break
+					else
+						v25 = v44; v30 = v44
+						textLabel8.Text = "اللاعب النشط: " .. v25
+					end
+				end
+
+				v42 = f10(v25 or v30 or "Player")
+				for _, value18 in ipairs(v41) do
+					if not v8 then break end
+					f3((value18:gsub(" sa", " " .. v42)))
+					task.wait(f4())
+				end
+				task.wait(0.1)
+
+			else
+				local v45, v46, v47, v48 = f11()
+				if not v45 and not infiniteCopy then
+					v8 = false
+					textButton17.Text = "تفعيل النسخ"
+					textButton17.BackgroundColor3 = v10.accentDark
+					textLabel8.Text = "انتهى الجميع"
+					break
+				end
+
+				if not v45 and infiniteCopy then
+					v45 = v30 or "Player"; v46 = nil; v47 = nil; v48 = nil
+				end
+				if v45 then v30 = v45 end
+
+				local v50 = { v45 and v45:sub(1,3) or "Player" }
+				if v46 then table.insert(v50, v46:sub(1,3)) end
+				if v47 then table.insert(v50, v47:sub(1,3)) end
+				if v48 then table.insert(v50, v48:sub(1,3)) end
+				local v51 = table.concat(v50, ",")
+
+				for _, value19 in ipairs(v41) do
+					if not v8 then break end
+					f3((value19
+						:gsub("sa,sa,sa,sa", v51)
+						:gsub("sa,sa,sa", v51)
+						:gsub("sa,sa", v51)
+						:gsub("sa", v51)
+					))
+					task.wait(f4())
+				end
+				textLabel8.Text = "غامض: " .. v51
+				task.wait(0.1)
+			end
+		end
+	end)
+end)
+
+textButton20.MouseButton1Click:Connect(function()
+	if v8 then
+		v8 = false
+		if v35 then task.cancel(v35) end
+		textButton17.Text = "تفعيل النسخ"
+		textButton17.BackgroundColor3 = v10.accentDark
+		v25 = nil; textLabel8.Text = "اللاعب النشط: متوقف"; v30 = nil
+	end
+	if v1 then
+		v1 = false
+		textButton18.Text = "سبام نسخ مشرف :OFF"
+		textButton18.BackgroundColor3 = v10.accentDark
+		if v29 then task.cancel(v29) end
+	end
+	if v2 then
+		v2 = false
+		textButton19.Text = "سبام اوامر غامض :OFF"
+		textButton19.BackgroundColor3 = v10.accentDark
+		if v32 then task.cancel(v32) end
+	end
+end)
+
+-- Auto refresh
+task.spawn(function()
+	while true do
+		task.wait(2)
+		f17()
+		if frame.Visible then f16() end
+	end
+end)
+
+-- Init
+f8(); refreshTabs(); f16(); f15(); f14()
+textBox.Text = v9[1].commands
+print("L3 Copy System")
